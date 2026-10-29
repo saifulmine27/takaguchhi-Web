@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#087c60">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="টাকাগুছি — আয়-খরচ সহজে লিখে রাখুন।">
+  <title>TakaGuchhi — Money Tracker</title>
+  <style>
+:root{color-scheme:light;--green:#087c60;--deep:#075c4d;--mint:#30c797;--ink:#18302c;--muted:#788982;--bg:#f2f6f4;--line:#e3ebe7;--card:#fff;--shadow:0 10px 28px #1c453314}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:"Noto Sans Bengali","Nirmala UI",system-ui,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer;transition:transform .16s ease,background .18s ease,box-shadow .18s ease,color .18s ease}button:active{transform:scale(.98)}
+.app-shell{width:min(100% - 28px,680px);margin:0 auto;padding:19px 0 110px}.topbar{display:flex;align-items:center;justify-content:space-between;margin:0 2px 17px}.brand{display:flex;align-items:center;gap:11px}.brand-mark{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;color:white;background:linear-gradient(145deg,#17aa7c,#075c4d);font-weight:800;font-size:24px;box-shadow:0 7px 16px #087c6033}.brand h1{font-size:21px;line-height:1.2;margin:0}.brand p{font-size:11px;color:var(--muted);margin:4px 0 0}.small-button{height:39px;min-width:42px;border:1px solid var(--line);border-radius:13px;background:white;color:#42675b;font-size:13px}.small-button:hover{background:#e8f6ef;transform:translateY(-1px)}
+.hero-card{position:relative;overflow:hidden;color:white;border-radius:25px;padding:23px 22px 17px;background:linear-gradient(118deg,#076b55 0%,#098866 53%,#2bbf8d 100%);box-shadow:0 13px 28px #087c602d;animation:fade-up .4s ease-out both}.hero-card:after{content:"";position:absolute;width:190px;height:190px;right:-62px;top:-100px;border-radius:50%;background:#ffffff12;animation:drift 15s ease-in-out infinite alternate}.hero-head{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start}.eyebrow{margin:0;color:#ffffffcf;font-size:12px}.hero-head h2{margin:5px 0 0;font-size:34px;font-weight:750;line-height:1.2;letter-spacing:-.5px}.hero-icon{width:43px;height:43px;border-radius:15px;background:#ffffff20;display:grid;place-items:center;font-size:22px;font-weight:700}.month-switch{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:17px;margin-top:17px}.month-switch button{height:29px;width:30px;padding:0;border:0;border-radius:9px;background:#ffffff19;color:white;font-size:21px;line-height:20px}.month-switch button:hover{background:#ffffff34}.month-switch strong{min-width:135px;text-align:center;font-size:13px}.hero-foot{position:relative;z-index:1;display:flex;justify-content:space-between;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid #ffffff2b;color:#ffffffd2;font-size:10px}
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:14px 0 22px}.summary-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 15px;box-shadow:0 5px 15px #193c2d08;animation:fade-up .42s .06s ease-out both}.summary-top{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px}.summary-icon{width:25px;height:25px;border-radius:9px;display:grid;place-items:center;font-size:16px;font-weight:700}.income-card .summary-icon{color:#0b9568;background:#e4f6ed}.expense-card .summary-icon{color:#dc725c;background:#fff0eb}.summary-card strong{display:block;margin-top:9px;font-size:18px;letter-spacing:-.2px}.income-card strong{color:#08865e}.expense-card strong{color:#cd624f}
+.chart-toggle{width:100%;display:flex;align-items:center;gap:9px;margin:-7px 0 17px;padding:11px 13px;border:1px solid #d8e9e1;border-radius:13px;background:#eaf5ef;color:#176a52;text-align:left;font-size:11px;font-weight:700}.chart-toggle:hover{background:#e2f2e9;border-color:#bddfce}.chart-toggle-icon{font-size:17px}.chart-chevron{margin-left:auto;font-size:15px;transition:transform .18s}.chart-toggle[aria-expanded="true"] .chart-chevron{transform:rotate(180deg)}.chart-card{margin:-5px 0 20px;padding:16px 15px 13px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);animation:fade-up .22s ease-out}.chart-card[hidden]{display:none}.chart-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.chart-header h2{font-size:13px;margin:0}.chart-header p{font-size:10px;color:var(--muted);margin:4px 0 0}.chart-period{flex:none;padding:5px 8px;border-radius:20px;background:#f2f6f4;color:#728079;font-size:9px}.chart-legend{display:flex;gap:15px;margin-top:14px;color:#6c7a73;font-size:10px}.chart-legend>span{display:flex;align-items:center;gap:5px}.legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block}.income-dot{background:#19a879}.expense-dot{background:#ea866b}.chart-bars{height:143px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));align-items:end;gap:4px;margin:10px 0 0;padding:0 2px;border-bottom:1px solid #e9efec}.chart-month{height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;min-width:0}.bar-pair{height:118px;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:4px}.chart-bar{width:min(26%,15px);min-width:6px;border-radius:5px 5px 2px 2px;transition:height .35s ease;animation:bar-rise .35s ease-out both}.income-bar{background:linear-gradient(180deg,#39ca95,#0b9970)}.expense-bar{background:linear-gradient(180deg,#f2a18a,#df765a)}.month-caption{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#728079;font-size:9px}.chart-totals{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}.chart-totals>span{display:flex;flex-direction:column;gap:4px;padding:9px 10px;border-radius:11px;background:#f6f8f7}.chart-totals small{color:var(--muted);font-size:9px}.chart-totals strong{font-size:12px}.income-text{color:#08865e}.expense-text{color:#cd624f}
+.toolbar-title{display:flex;align-items:baseline;justify-content:space-between}.toolbar-title h2{font-size:17px;margin:0}.toolbar-title span{font-size:10px;color:var(--muted)}.search-box{height:42px;display:flex;align-items:center;gap:8px;margin-top:11px;padding:0 11px;background:#fff;border:1px solid var(--line);border-radius:13px;transition:border-color .18s,box-shadow .18s}.search-box:focus-within{border-color:#41ae88;box-shadow:0 0 0 3px #159b6b12}.search-box>span{font-size:17px;color:#899690}.search-box input{height:100%;min-width:0;flex:1;border:0;outline:0;background:transparent;font-size:12px;color:var(--ink)}.search-box button{display:none;border:0;background:transparent;color:#87948f;font-size:19px}.search-box button.visible{display:block}.filters{display:flex;gap:7px;margin:13px 0}.filter{border:1px solid #d5e0db;background:transparent;color:#687a73;border-radius:20px;padding:7px 14px;font-size:11px}.filter:hover{border-color:#52b692;transform:translateY(-1px)}.filter.active{background:var(--green);border-color:var(--green);color:white;box-shadow:0 4px 10px #087c6025}
+.transaction-list{display:grid;gap:9px}.transaction{display:grid;grid-template-columns:43px minmax(0,1fr) auto;gap:11px;align-items:center;background:white;border:1px solid #e7eeea;border-radius:16px;padding:12px 13px;box-shadow:var(--shadow);animation:fade-up .22s ease-out;transition:transform .18s,box-shadow .18s,border-color .18s}.transaction:hover{transform:translateY(-2px);border-color:#d2e7dc;box-shadow:0 14px 30px #1c45331c}.tx-icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:18px;background:#fff0eb;color:#d46f56}.tx-icon.income{background:#e7f6ef;color:#08865e}.tx-name{font-weight:700;font-size:12px;overflow-wrap:anywhere}.tx-meta{margin-top:4px;color:var(--muted);font-size:10px;overflow-wrap:anywhere}.tx-note{margin-top:3px;font-size:10px;color:#8e9a95;overflow-wrap:anywhere}.tx-right{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px}.tx-amount{font-size:13px;font-weight:750;white-space:nowrap}.tx-amount.income{color:#08865e}.tx-amount.expense{color:#cd624f}.tx-actions{display:flex;gap:2px}.tx-actions button{border:0;background:transparent;color:#9aa59f;width:27px;height:25px;border-radius:8px;font-size:13px}.tx-actions button:hover{background:#eff6f2;color:var(--green)}.tx-actions .delete:hover{background:#fff0ed;color:#c65a4b}
+.empty{padding:35px 20px 38px;text-align:center;border:1px dashed #d6e2dc;border-radius:18px;background:#ffffffa8}.empty-icon{width:57px;height:57px;border-radius:20px;margin:0 auto 12px;display:grid;place-items:center;color:var(--green);background:#e4f4ec;font-size:26px}.empty h3{margin:0;font-size:14px}.empty p{margin:6px 0 0;color:var(--muted);font-size:11px}.local-note{text-align:center;color:#98a49e;font-size:10px;margin:18px 0 0}.add-button{position:fixed;z-index:3;bottom:max(18px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(100% - 32px,420px);height:54px;border:0;border-radius:17px;color:white;background:linear-gradient(110deg,#08785c,#0b9b6e);box-shadow:0 10px 23px #087c6043;font-size:13px;font-weight:700}.add-button:hover{box-shadow:0 14px 27px #087c6052;filter:brightness(1.03)}.add-button:active{transform:translateX(-50%) scale(.985)}.add-button span:first-child{font-size:21px;vertical-align:-2px;margin-right:6px;font-weight:400}
+dialog{border:0;padding:0;background:transparent;width:min(100% - 26px,455px);max-height:calc(100dvh - 24px)}dialog::backdrop{background:#10291f80;backdrop-filter:blur(3px)}.dialog-card{max-height:calc(100dvh - 24px);overflow:auto;padding:21px;background:white;border-radius:23px;box-shadow:0 20px 55px #14251d40;animation:modal-in .18s ease-out both}.dialog-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}.dialog-header h2{font-size:19px;margin:0}.close-button{width:34px;height:34px;border:0;border-radius:10px;background:#f0f4f2;color:#697872;font-size:20px}.type-switch{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:4px;border-radius:13px;background:#f1f5f3}.type-choice{height:37px;border:0;border-radius:10px;background:transparent;color:#6e7d77;font-size:12px}.type-choice.active{background:#fff;color:var(--deep);box-shadow:0 2px 7px #203b2c12;font-weight:700}.field{margin-top:12px}.field label{display:block;margin:0 0 6px;color:#687971;font-size:11px;font-weight:650}.field input,.field select,.field textarea{width:100%;border:1px solid #dce5e0;border-radius:11px;padding:10px 11px;outline:0;background:#fff;color:var(--ink);font-size:12px;transition:border-color .16s,box-shadow .16s}.field input:focus,.field select:focus,.field textarea:focus{border-color:#39aa82;box-shadow:0 0 0 3px #159b6b15}.field textarea{resize:vertical;min-height:57px}.amount-input{display:flex;align-items:center;border:1px solid #dce5e0;border-radius:11px;padding-left:12px;color:var(--green);font-weight:700}.amount-input:focus-within{border-color:#39aa82;box-shadow:0 0 0 3px #159b6b15}.amount-input input{border:0;box-shadow:none!important}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.dialog-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:19px}.dialog-actions button{border-radius:11px;padding:10px 15px;font-size:12px}.cancel-button{border:1px solid var(--line);background:white;color:#687971}.save-button{border:0;background:var(--green);color:white;font-weight:700}.save-button:hover{background:#076b54;transform:translateY(-1px)}.toast{position:fixed;z-index:9;left:50%;bottom:84px;transform:translateX(-50%);max-width:calc(100% - 28px);padding:10px 14px;border-radius:12px;background:#173a32;color:#fff;font-size:11px;box-shadow:0 10px 24px #10172733;opacity:0;pointer-events:none;transition:opacity .18s}.toast.show{opacity:1}
+@keyframes fade-up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}@keyframes drift{to{transform:translate(-10px,7px) scale(1.05)}}@keyframes modal-in{from{opacity:.5;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}@keyframes bar-rise{from{transform:scaleY(.25);transform-origin:bottom}to{transform:scaleY(1)}}
+@media(max-width:500px){.app-shell{width:calc(100% - 24px);padding-top:13px}.hero-card{padding:21px 18px 15px}.hero-head h2{font-size:30px}.summary-card{padding:12px}.summary-card strong{font-size:16px}.toolbar-title h2{font-size:16px}.transaction{grid-template-columns:39px minmax(0,1fr) auto;gap:9px;padding:10px}.tx-icon{width:38px;height:38px;border-radius:12px}.tx-name{font-size:11px}.tx-amount{font-size:12px}.tx-actions button{width:24px}.form-row{gap:7px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* Yellow, compact ledger and category insights inspired by the supplied references. */
+.hero-card{color:#20201c;background:linear-gradient(115deg,#ffe35a 0%,#ffda42 70%,#ffd02d 100%);box-shadow:0 13px 28px #c69b1730}
+.hero-card:after{background:#ffffff31}.hero-card .eyebrow{color:#6b5d2e}.hero-icon{background:#29250f12;color:#534710}.month-switch button{background:#29250f13;color:#302a13}.month-switch button:hover{background:#29250f25}.hero-foot{border-color:#55471022;color:#64582c}
+.filter.active{background:#f2d340;border-color:#f2d340;color:#242319;box-shadow:0 4px 10px #b899242d}.chart-card{padding:0 0 12px;border:0;overflow:hidden}.chart-select-row{padding:15px 15px 12px;background:#ffdc48}.chart-select-row select{width:100%;border:0;outline:0;background:transparent;color:#242319;font-size:14px;font-weight:750}.period-tabs{display:flex;margin:0 15px;padding:3px;border:1px solid #9f8b37;border-radius:6px;background:#ffe883}.period-tabs button{flex:1;height:28px;border:0;border-radius:4px;background:transparent;color:#453c20;font-size:11px}.period-tabs button.active{background:#26251f;color:#fff}.chart-date-row{display:flex;align-items:center;justify-content:space-around;margin:12px 14px 7px;color:#68746f}.chart-date-row strong{font-size:11px;font-weight:500}.chart-date-row button{height:28px;width:30px;border:0;border-radius:9px;background:transparent;color:#65756e;font-size:20px}.chart-date-row button:hover{background:#f1f4f2}.donut-layout{display:grid;grid-template-columns:minmax(125px, .95fr) minmax(145px,1.05fr);gap:14px;align-items:center;padding:12px 14px 15px;border-bottom:1px solid #edf0ee;min-height:205px}.donut{position:relative;width:min(100%,160px);aspect-ratio:1/1;border-radius:50%;display:grid;place-items:center;justify-self:center;transition:background .3s ease;animation:fade-up .25s ease-out}.donut:before{content:"";position:absolute;inset:36%;border-radius:50%;background:#fff}.donut-center{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:4px;max-width:75%;text-align:center}.donut-center small{color:#7d8781;font-size:9px}.donut-center strong{font-size:12px;overflow-wrap:anywhere}.chart-legend{display:flex;flex-direction:column;gap:9px;margin:0;min-width:0}.legend-row{display:grid;grid-template-columns:10px minmax(0,1fr) auto;align-items:center;gap:6px;font-size:9px}.legend-color{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}.legend-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#4f5b55}.legend-percent{color:#7a857f;font-size:8px}.chart-empty{grid-column:1/-1;color:#87918b;font-size:10px;text-align:center}.top-list-header{display:flex;align-items:center;justify-content:space-between;padding:13px 15px 4px}.top-list-header h3{margin:0;font-size:13px}.top-list-header span{font-size:9px;color:#8a958e}.category-breakdown{padding:0 15px}.breakdown-row{padding:10px 0;border-bottom:1px solid #edf0ee}.breakdown-row:last-child{border-bottom:0}.breakdown-top{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:10px}.breakdown-name{display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.breakdown-name small{color:#87928b;font-size:9px}.breakdown-top strong{font-size:10px;white-space:nowrap}.breakdown-track{height:5px;margin-top:7px;border-radius:10px;background:#edf0ed;overflow:hidden}.breakdown-track span{height:100%;display:block;border-radius:inherit;transition:width .3s ease}.bottom-nav{position:fixed;z-index:5;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,540px);height:68px;padding:7px 19px max(7px,env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 58px 1fr;align-items:center;gap:18px;border-top:1px solid #e8ece9;background:#ffffffef;backdrop-filter:blur(12px);box-shadow:0 -6px 20px #1d35240b}.nav-item{height:49px;border:0;border-radius:12px;background:transparent;color:#7a857f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}.nav-item>span{font-size:18px;line-height:20px}.nav-item small{font-size:9px}.nav-item.active{color:#d3ae16}.nav-item:hover{background:#fff9db;color:#88700b}.nav-add{height:48px;width:48px;justify-self:center;border:0;border-radius:50%;background:#ffda43;color:#28251b;font-size:30px;line-height:1;box-shadow:0 5px 12px #ac8e263d}.nav-add:hover{transform:translateY(-2px);box-shadow:0 8px 16px #ac8e2648}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:430px){.donut-layout{grid-template-columns:minmax(116px,.9fr) minmax(130px,1.1fr);gap:9px;padding-inline:11px}.donut{width:min(100%,145px)}.chart-legend{gap:8px}.legend-row{font-size:8px}.bottom-nav{padding-inline:27px}}
+
+/* Emerald theme refresh. */
+.hero-card{color:#fff;background:linear-gradient(118deg,#087c60 0%,#12a77b 58%,#38c99a 100%);box-shadow:0 13px 28px #087c6030}
+.hero-card:after{background:#ffffff18}.hero-card .eyebrow{color:#ffffffd6}.hero-icon{background:#ffffff24;color:#fff}.month-switch button{background:#ffffff20;color:#fff}.month-switch button:hover{background:#ffffff3b}.hero-foot{border-color:#ffffff38;color:#ffffffdf}
+.filter.active{background:#119875;border-color:#119875;color:#fff;box-shadow:0 4px 10px #087c6030}
+.chart-select-row{background:#e0f4ec}.chart-select-row select{color:#124b3d}.period-tabs{border-color:#92cbb4;background:#f0faf5}.period-tabs button{color:#285c4d}.period-tabs button.active{background:#087c60;color:#fff}
+.nav-item.active{color:#087c60}.nav-item:hover{background:#e8f6ef;color:#087c60}.nav-add{background:linear-gradient(135deg,#12a77b,#087c60);color:#fff;box-shadow:0 5px 12px #087c6040}.nav-add:hover{box-shadow:0 8px 16px #087c604d}
+.header-actions{display:flex;align-items:center;gap:7px}.settings-button{font-size:18px;line-height:1}
+.settings-card{width:100%}.settings-label{margin:2px 0 10px;color:#687971;font-size:12px;font-weight:650}.theme-options{display:grid;gap:8px}.theme-option{min-height:48px;display:grid;grid-template-columns:22px 1fr 18px;align-items:center;gap:10px;padding:8px 11px;border:1px solid #e0e8e3;border-radius:13px;background:#fff;color:var(--ink);text-align:left;font-size:12px}.theme-option i{width:20px;height:20px;border-radius:50%;background:var(--swatch);box-shadow:inset 0 0 0 1px #00000012}.theme-option b{opacity:0;color:var(--swatch);font-size:15px}.theme-option.selected{border-color:var(--swatch);background:color-mix(in srgb,var(--swatch) 8%,white)}.theme-option.selected b{opacity:1}.theme-option[data-theme-choice="emerald"]{--swatch:#087c60}.theme-option[data-theme-choice="ocean"]{--swatch:#1876c9}.theme-option[data-theme-choice="violet"]{--swatch:#7152c8}.theme-option[data-theme-choice="rose"]{--swatch:#d94c81}
+body[data-theme="ocean"] .hero-card{background:linear-gradient(118deg,#14589d 0%,#1876c9 58%,#45a4eb 100%);box-shadow:0 13px 28px #1876c930}body[data-theme="ocean"] .chart-select-row{background:#e5f2ff}body[data-theme="ocean"] .chart-select-row select{color:#173f67}body[data-theme="ocean"] .period-tabs{border-color:#9ec8ec;background:#f1f8ff}body[data-theme="ocean"] .period-tabs button{color:#28577c}body[data-theme="ocean"] .period-tabs button.active{background:#1876c9}body[data-theme="ocean"] .filter.active{background:#1876c9;border-color:#1876c9;box-shadow:0 4px 10px #1876c930}body[data-theme="ocean"] .nav-item.active,body[data-theme="ocean"] .nav-item:hover{color:#1876c9}body[data-theme="ocean"] .nav-item:hover{background:#eaf5ff}body[data-theme="ocean"] .nav-add{background:linear-gradient(135deg,#45a4eb,#1876c9);box-shadow:0 5px 12px #1876c940}
+body[data-theme="violet"] .hero-card{background:linear-gradient(118deg,#5238a3 0%,#7152c8 58%,#a07de8 100%);box-shadow:0 13px 28px #7152c830}body[data-theme="violet"] .chart-select-row{background:#f0eaff}body[data-theme="violet"] .chart-select-row select{color:#40316f}body[data-theme="violet"] .period-tabs{border-color:#c0b1e7;background:#f8f5ff}body[data-theme="violet"] .period-tabs button{color:#564a78}body[data-theme="violet"] .period-tabs button.active{background:#7152c8}body[data-theme="violet"] .filter.active{background:#7152c8;border-color:#7152c8;box-shadow:0 4px 10px #7152c830}body[data-theme="violet"] .nav-item.active,body[data-theme="violet"] .nav-item:hover{color:#7152c8}body[data-theme="violet"] .nav-item:hover{background:#f1edfc}body[data-theme="violet"] .nav-add{background:linear-gradient(135deg,#a07de8,#7152c8);box-shadow:0 5px 12px #7152c840}
+body[data-theme="rose"] .hero-card{background:linear-gradient(118deg,#a92e62 0%,#d94c81 58%,#f17aa7 100%);box-shadow:0 13px 28px #d94c8130}body[data-theme="rose"] .chart-select-row{background:#ffe8f0}body[data-theme="rose"] .chart-select-row select{color:#6f2745}body[data-theme="rose"] .period-tabs{border-color:#efacc5;background:#fff5f8}body[data-theme="rose"] .period-tabs button{color:#773b54}body[data-theme="rose"] .period-tabs button.active{background:#d94c81}body[data-theme="rose"] .filter.active{background:#d94c81;border-color:#d94c81;box-shadow:0 4px 10px #d94c8130}body[data-theme="rose"] .nav-item.active,body[data-theme="rose"] .nav-item:hover{color:#d94c81}body[data-theme="rose"] .nav-item:hover{background:#fff0f5}body[data-theme="rose"] .nav-add{background:linear-gradient(135deg,#f17aa7,#d94c81);box-shadow:0 5px 12px #d94c8140}
+.brand-mark{display:block;flex:none;overflow:visible;background:none;box-shadow:0 7px 16px #087c6033;--logo-start:#26c28c;--logo-end:#075c4d;--coin-start:#ffe58a;--coin-end:#f5b83d;--logo-ink:#145c47;--logo-lines:#0b8d69;--logo-page:#e4f7ef;--logo-halo:#075c4d33;--logo-sparkle:#a3f2d4}.logo-bg-start{stop-color:var(--logo-start)}.logo-bg-end{stop-color:var(--logo-end)}.logo-coin-start{stop-color:var(--coin-start)}.logo-coin-end{stop-color:var(--coin-end)}.logo-lines{stroke:var(--logo-lines)}.logo-page{fill:var(--logo-page)}.logo-halo{fill:var(--logo-halo)}.logo-symbol{fill:var(--logo-ink)}.logo-sparkle{fill:var(--logo-sparkle)}
+body[data-theme="ocean"] .brand-mark{--logo-start:#53b5f3;--logo-end:#14589d;--coin-start:#d7f1ff;--coin-end:#85cef8;--logo-ink:#14589d;--logo-lines:#1876c9;--logo-page:#e7f4ff;--logo-halo:#14589d33;--logo-sparkle:#a6defc}
+body[data-theme="violet"] .brand-mark{--logo-start:#ad98f4;--logo-end:#5238a3;--coin-start:#e7dcff;--coin-end:#bba6fa;--logo-ink:#5238a3;--logo-lines:#7152c8;--logo-page:#f0eaff;--logo-halo:#5238a333;--logo-sparkle:#d1c2ff}
+body[data-theme="rose"] .brand-mark{--logo-start:#ff9ebd;--logo-end:#a92e62;--coin-start:#ffe0eb;--coin-end:#f382aa;--logo-ink:#a92e62;--logo-lines:#d94c81;--logo-page:#ffe8f0;--logo-halo:#a92e6233;--logo-sparkle:#ffc0d3}
+.chart-select-row{padding:12px 14px;background:#fff}.chart-type-switch{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:4px;border:1px solid #e3ebe7;border-radius:15px;background:#f2f6f4}.chart-type-button{min-height:42px;display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:11px;background:transparent;color:#61726a;font-size:12px;font-weight:650;transition:background .18s,color .18s,box-shadow .18s,transform .16s}.chart-type-button>span:first-child{font-size:16px}.chart-type-button:hover{background:#e5f0ea;color:#176a52}.chart-type-button.active{background:#087c60;color:#fff;box-shadow:0 3px 9px #087c6033}
+body[data-theme="ocean"] .chart-type-button.active{background:#1876c9;box-shadow:0 3px 9px #1876c933}body[data-theme="ocean"] .chart-type-button:hover{background:#eaf5ff;color:#14589d}
+body[data-theme="violet"] .chart-type-button.active{background:#7152c8;box-shadow:0 3px 9px #7152c833}body[data-theme="violet"] .chart-type-button:hover{background:#f1edfc;color:#5238a3}
+body[data-theme="rose"] .chart-type-button.active{background:#d94c81;box-shadow:0 3px 9px #d94c8133}body[data-theme="rose"] .chart-type-button:hover{background:#fff0f5;color:#a92e62}
+.period-tabs{border:0;background:#087c60}.period-tabs button,.period-tabs button.active{color:#fff;font-weight:650}.period-tabs button{background:transparent}.period-tabs button.active{background:#ffffff25;box-shadow:inset 0 0 0 1px #ffffff35}.period-tabs button:hover{background:#ffffff20}
+body[data-theme="ocean"] .period-tabs{background:#14589d}body[data-theme="violet"] .period-tabs{background:#5238a3}body[data-theme="rose"] .period-tabs{background:#a92e62}
+body[data-theme="emerald"] .period-tabs button,body[data-theme="emerald"] .period-tabs button.active,body[data-theme="ocean"] .period-tabs button,body[data-theme="ocean"] .period-tabs button.active,body[data-theme="violet"] .period-tabs button,body[data-theme="violet"] .period-tabs button.active,body[data-theme="rose"] .period-tabs button,body[data-theme="rose"] .period-tabs button.active{color:#fff;font-weight:650}
+.donut-center small{color:#087c60;font-weight:700;line-height:1.25}.donut-center strong{color:#18302c}body[data-theme="ocean"] .donut-center small{color:#1876c9}body[data-theme="violet"] .donut-center small{color:#7152c8}body[data-theme="rose"] .donut-center small{color:#d94c81}
+.category-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;max-height:270px;overflow-y:auto;padding:2px 3px 3px 0;overscroll-behavior:contain}.category-option{min-width:0;min-height:38px;display:flex;align-items:center;gap:7px;padding:6px 9px;border:1px solid #dce5e0;border-radius:11px;background:#fff;color:#53645d;text-align:left;font-size:11px;line-height:1.2;transition:border-color .16s,background .16s,color .16s,transform .16s}.category-option:hover{border-color:#9acdb8;background:#f2faf6;transform:translateY(-1px)}.category-option.selected{border-color:#087c60;background:#e8f6ef;color:#075c4d;font-weight:700;box-shadow:inset 0 0 0 1px #087c6020}.category-option-icon{width:22px;height:22px;flex:none;display:grid;place-items:center;border-radius:7px;background:#f0f5f2;font-size:13px}.category-option span:last-child{overflow-wrap:anywhere}
+body[data-theme="ocean"] .category-option.selected{border-color:#1876c9;background:#eaf5ff;color:#14589d;box-shadow:inset 0 0 0 1px #1876c920}body[data-theme="ocean"] .category-option:hover{border-color:#9fcaf0;background:#f5faff}
+body[data-theme="violet"] .category-option.selected{border-color:#7152c8;background:#f1edfc;color:#5238a3;box-shadow:inset 0 0 0 1px #7152c820}body[data-theme="violet"] .category-option:hover{border-color:#c0b1e7;background:#faf8ff}
+body[data-theme="rose"] .category-option.selected{border-color:#d94c81;background:#fff0f5;color:#a92e62;box-shadow:inset 0 0 0 1px #d94c8120}body[data-theme="rose"] .category-option:hover{border-color:#efacc5;background:#fff8fa}
+.account-section{margin:0 0 18px;padding:13px;border:1px solid #dce9e2;border-radius:15px;background:#f7fbf9}.account-section h3{margin:0;color:var(--ink);font-size:13px}.account-section p{margin:5px 0 11px;color:#788982;font-size:10px;line-height:1.5}.account-section .account-email{margin:7px 0;color:#23493d;font-size:11px;font-weight:650;overflow-wrap:anywhere}.google-button{width:100%;min-height:41px;display:flex;align-items:center;justify-content:center;gap:9px;border:1px solid #dce5e0;border-radius:11px;background:#fff;color:#293a33;font-size:12px;font-weight:650}.google-button:hover{border-color:#a9cdbb;background:#fafffc}.google-mark{font-family:Arial,sans-serif;font-size:16px;font-weight:800;color:#4285f4}.signout-button{color:#b34c4c}
+
+/* ===== বড় আইকন ও লেখা (readability boost) ===== */
+.app-shell{padding-bottom:132px}
+.brand{gap:13px}
+.brand-mark{width:58px;height:58px;border-radius:19px}
+.brand h1{font-size:25px}
+.brand p{font-size:13px;margin-top:3px}
+.small-button{height:44px;min-width:46px;font-size:16px;border-radius:14px}
+.eyebrow{font-size:14px}
+.hero-head h2{font-size:30px}
+.hero-icon{width:52px;height:52px;border-radius:17px;font-size:26px}
+.month-switch button{height:34px;width:36px;font-size:24px;line-height:24px}
+.month-switch strong{font-size:15px;min-width:150px}
+.hero-foot{font-size:12px}
+.summary-top{font-size:13px}
+.summary-icon{width:30px;height:30px;font-size:19px}
+.summary-card strong{font-size:22px}
+.toolbar-title h2{font-size:20px}
+.toolbar-title span{font-size:12px}
+.search-box{height:46px}
+.search-box>span{font-size:20px}
+.search-box input{font-size:14px}
+.filter{font-size:13px}
+.transaction{grid-template-columns:50px minmax(0,1fr) auto;gap:12px}
+.tx-icon{width:48px;height:48px;font-size:21px}
+.tx-name{font-size:14px}
+.tx-meta,.tx-note{font-size:12px}
+.tx-amount{font-size:15px}
+.tx-actions button{width:31px;height:30px;font-size:15px}
+.empty-icon{width:68px;height:68px;font-size:31px}
+.empty h3{font-size:17px}
+.empty p{font-size:13px}
+.add-button{height:58px;font-size:15px}
+.add-button span:first-child{font-size:24px}
+.chart-empty{font-size:12px}
+.bottom-nav{height:76px}
+.nav-item{height:56px}
+.nav-item>span{font-size:22px;height:24px}
+.nav-item small{font-size:11px}
+.nav-add{width:54px;height:54px;font-size:34px}
+@media(max-width:500px){
+.hero-head h2{font-size:28px}
+.summary-card{padding:14px}
+.summary-card strong{font-size:20px}
+.toolbar-title h2{font-size:19px}
+.transaction{grid-template-columns:46px minmax(0,1fr) auto;gap:10px;padding:11px}
+.tx-icon{width:44px;height:44px;border-radius:14px}
+.tx-name{font-size:14px}
+.tx-amount{font-size:15px}
+.tx-actions button{width:28px}
+}
+@media(max-width:420px){
+.brand{gap:10px;min-width:0}
+.brand-mark{width:52px;height:52px}
+.brand h1{font-size:21px}
+.brand p{font-size:12px}
+.header-actions{gap:6px}
+.small-button{min-width:42px}
+}
+
+.google-signup{gap:10px}
+.g-logo{width:22px;height:22px;flex:none}
+.account-hint{margin:8px 2px 0;font-size:12px;line-height:1.5;color:#5f7068}
+
+/* Premium visual polish: softer canvas, refined surfaces, and clearer hierarchy. */
+body{background:radial-gradient(ellipse at 8% 0%,#dff5eb 0,transparent 32%),radial-gradient(ellipse at 100% 18%,#e8f2ff 0,transparent 28%),#f5f8f6;background-attachment:fixed}
+.app-shell{width:min(100% - 32px,720px);padding-top:24px}
+.topbar{margin-bottom:21px}
+.brand-mark{border-radius:18px;filter:drop-shadow(0 8px 12px #087c6020)}
+.brand h1{letter-spacing:-.65px;font-weight:800}
+.brand p{letter-spacing:.05px}
+.small-button{background:#ffffffd9;box-shadow:0 3px 10px #193c2d08;backdrop-filter:blur(12px)}
+.hero-card{border:1px solid #ffffff70;border-radius:28px;padding:25px 24px 18px;box-shadow:0 18px 36px #087c6025,inset 0 1px 0 #ffffff55}
+.hero-card:after{width:240px;height:240px;right:-75px;top:-125px;background:radial-gradient(circle at 35% 65%,#ffffff25,transparent 67%)}
+.hero-head h2{font-size:clamp(30px,6vw,38px);letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.hero-icon{border:1px solid #ffffff35;box-shadow:inset 0 1px 0 #ffffff25;backdrop-filter:blur(8px)}
+.month-switch{gap:20px;margin-top:20px}
+.month-switch button{border:1px solid #ffffff25;border-radius:11px}
+.hero-foot{margin-top:17px;padding-top:14px}
+.summary-grid{gap:13px;margin:16px 0 24px}
+.summary-card{position:relative;overflow:hidden;border-radius:21px;padding:17px 17px 16px;box-shadow:0 8px 22px #193c2d08;transition:transform .2s,box-shadow .2s,border-color .2s}
+.summary-card:after{content:"";position:absolute;width:75px;height:75px;right:-35px;bottom:-42px;border-radius:50%;background:currentColor;opacity:.035}
+.summary-card:hover{transform:translateY(-2px);box-shadow:0 13px 27px #193c2d0d;border-color:#d3e6dc}
+.summary-card strong{font-size:clamp(19px,4vw,23px);font-variant-numeric:tabular-nums;letter-spacing:-.45px}
+.chart-card{border:1px solid #e4ece7;border-radius:22px;box-shadow:0 12px 30px #18382b0b}
+.chart-select-row{padding:15px 16px 12px}
+.chart-type-switch{border-radius:16px}
+.chart-type-button{border-radius:12px}
+.period-tabs{margin:0 16px;border-radius:11px;padding:4px}
+.period-tabs button,.period-tabs button.active{border-radius:8px}
+.chart-date-row{margin-top:13px}
+.donut-layout{padding-top:16px;padding-bottom:17px}
+.donut{filter:drop-shadow(0 5px 9px #18382b0a)}
+.donut:before{inset:34%;box-shadow:inset 0 0 0 1px #edf1ee}
+.donut-center strong{font-size:13px;font-variant-numeric:tabular-nums}
+.breakdown-row{padding:12px 0}
+.breakdown-track{height:6px;background:#edf3ef}
+.toolbar-title{margin-bottom:2px}
+.toolbar-title h2{letter-spacing:-.35px}
+.search-box{border-radius:15px;background:#ffffffdf;box-shadow:0 4px 12px #193c2d05}
+.filters{gap:8px;margin:14px 0 15px}
+.filter{padding:8px 16px;border-radius:999px;background:#ffffffa8;transition:all .18s ease}
+.transaction-list{gap:11px}
+.transaction{border-color:#e4ece7;border-radius:19px;padding:14px;box-shadow:0 6px 18px #18382b08}
+.transaction:hover{box-shadow:0 14px 28px #18382b12}
+.tx-icon{border:1px solid #e9f0eb}
+.tx-amount{font-variant-numeric:tabular-nums;letter-spacing:-.15px}
+.empty{border-radius:22px;background:#ffffffbd;padding-top:40px;padding-bottom:42px}
+.add-button{border:1px solid #ffffff45;border-radius:19px;box-shadow:0 12px 26px #087c6038,inset 0 1px 0 #ffffff30;backdrop-filter:blur(12px)}
+.bottom-nav{border:1px solid #e7ede9;border-bottom:0;border-radius:22px 22px 0 0;box-shadow:0 -8px 28px #18382b0b}
+.nav-item,.nav-add{transition:transform .18s,background .18s,color .18s,box-shadow .18s}
+.nav-add{border:1px solid #ffffff70}
+.dialog-card{border:1px solid #ffffffb0;border-radius:26px;box-shadow:0 24px 70px #10291f35}
+.field input,.field select,.field textarea,.amount-input{border-radius:13px}
+.save-button{box-shadow:0 5px 12px #087c6022}
+body[data-theme="ocean"]{background:radial-gradient(ellipse at 8% 0%,#e0f0ff 0,transparent 32%),radial-gradient(ellipse at 100% 18%,#e8edff 0,transparent 28%),#f5f8fc;background-attachment:fixed}
+body[data-theme="violet"]{background:radial-gradient(ellipse at 8% 0%,#eee7ff 0,transparent 32%),radial-gradient(ellipse at 100% 18%,#f8eafa 0,transparent 28%),#f8f7fc;background-attachment:fixed}
+body[data-theme="rose"]{background:radial-gradient(ellipse at 8% 0%,#ffe6ef 0,transparent 32%),radial-gradient(ellipse at 100% 18%,#fff0e8 0,transparent 28%),#fcf7f9;background-attachment:fixed}
+@media(max-width:500px){.app-shell{width:calc(100% - 24px);padding-top:14px}.hero-card{padding:22px 18px 16px;border-radius:24px}.summary-grid{gap:10px}.summary-card{padding:14px 12px;border-radius:18px}.transaction{border-radius:17px}.bottom-nav{border-radius:19px 19px 0 0}}
+@media(prefers-reduced-motion:reduce){.summary-card:hover,.transaction:hover{transform:none}}
+
+[hidden]{display:none!important}
+
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 128 128" role="img" aria-label="টাকাগুছি লোগো" width="46" height="46">
+          <defs><linearGradient id="logoBg" x1="10" y1="8" x2="118" y2="122" gradientUnits="userSpaceOnUse"><stop class="logo-bg-start" offset="0"/><stop class="logo-bg-end" offset="1"/></linearGradient><linearGradient id="logoCoin" x1="77" y1="22" x2="111" y2="58" gradientUnits="userSpaceOnUse"><stop class="logo-coin-start" offset="0"/><stop class="logo-coin-end" offset="1"/></linearGradient><filter id="logoShadow" x="16" y="20" width="100" height="98" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#003c32" flood-opacity=".24"/></filter></defs>
+          <rect width="128" height="128" rx="38" fill="url(#logoBg)"/>
+          <path d="M19 38.5A8.5 8.5 0 0 1 27.5 30H82v70H27.5a8.5 8.5 0 0 1-8.5-8.5z" fill="#fff" filter="url(#logoShadow)"/>
+          <path d="M28 43h42M28 56h31M28 69h37" class="logo-lines" fill="none" stroke-width="6" stroke-linecap="round"/>
+          <path d="M19 83h63v9a8 8 0 0 1-8 8H27a8 8 0 0 1-8-8z" class="logo-page"/>
+          <circle cx="94" cy="42" r="25" class="logo-halo"/><circle cx="91" cy="38" r="24" fill="url(#logoCoin)" stroke="#fff" stroke-width="4"/>
+          <text x="91" y="47" text-anchor="middle" class="logo-symbol" font-family="system-ui,'Noto Sans Bengali',sans-serif" font-size="27" font-weight="800">৳</text><circle cx="100" cy="94" r="5" class="logo-sparkle"/>
+        </svg>
+        <div><h1>TakaGuchhi</h1><p id="tagline">প্রতিদিনের হিসাব, এক জায়গায়</p></div>
+      </div>
+      <div class="header-actions"><button class="small-button settings-button" id="settingsButton" type="button" aria-label="সেটিংস" title="সেটিংস">⚙</button><button class="small-button" id="languageButton" type="button" aria-label="ভাষা বদলান" title="English">অ</button></div>
+    </header>
+
+    <section class="hero-card" aria-label="মাসের মোট হিসাব">
+      <div class="hero-head"><div><p class="eyebrow" id="balanceLabel">এই মাসে হাতে আছে</p><h2 id="balanceAmount">৳০</h2></div><div class="hero-icon" aria-hidden="true">৳</div></div>
+      <div class="month-switch"><button id="previousMonth" type="button" aria-label="আগের মাস">‹</button><strong id="monthLabel"></strong><button id="nextMonth" type="button" aria-label="পরের মাস">›</button></div>
+      <div class="hero-foot"><span id="monthHint">মাসের মোট ব্যালান্স</span><span id="transactionCount">০টি লেনদেন</span></div>
+    </section>
+
+    <section class="summary-grid" aria-label="আয় ও খরচ">
+      <article class="summary-card income-card"><div class="summary-top"><span class="summary-icon">↙</span><span id="incomeLabel">মোট আয়</span></div><strong id="incomeAmount">৳০</strong></article>
+      <article class="summary-card expense-card"><div class="summary-top"><span class="summary-icon">↗</span><span id="expenseLabel">মোট খরচ</span></div><strong id="expenseAmount">৳০</strong></article>
+    </section>
+
+    <section class="chart-view" id="chartView" hidden aria-label="আয়-খরচের গ্রাফ">
+      <div class="chart-card">
+        <div class="chart-select-row"><span class="sr-only" id="chartTypeLabel">লেনদেনের ধরন</span><div class="chart-type-switch" id="chartTypeSwitch" role="group" aria-labelledby="chartTypeLabel"><button class="chart-type-button active" data-chart-type="expense" type="button" aria-pressed="true"><span aria-hidden="true">↘</span><span id="chartExpenseLabel">খরচ</span></button><button class="chart-type-button" data-chart-type="income" type="button" aria-pressed="false"><span aria-hidden="true">↗</span><span id="chartIncomeLabel">আয়</span></button></div></div>
+        <div class="period-tabs" id="periodTabs"><button class="active" data-period="month" type="button" id="monthTab">মাস</button><button data-period="year" type="button" id="yearTab">বছর</button></div>
+        <div class="chart-date-row"><button id="chartPrevious" type="button" aria-label="আগের সময়">‹</button><strong id="chartDateLabel"></strong><button id="chartNext" type="button" aria-label="পরের সময়">›</button></div>
+        <div class="donut-layout"><div class="donut" id="donutChart" role="img" aria-label="খরচের বিভাগভিত্তিক গ্রাফ"><div class="donut-center"><small id="donutTotalLabel">মোট খরচ</small><strong id="donutTotal">৳০</strong></div></div><div class="chart-legend" id="chartLegend"></div></div>
+        <div class="top-list-header"><h3 id="topListTitle">শীর্ষ খরচ</h3><span id="topListSubtitle"></span></div>
+        <div class="category-breakdown" id="categoryBreakdown"></div>
+      </div>
+    </section>
+
+    <section class="records-view" id="recordsView">
+    <section class="toolbar">
+      <div class="toolbar-title"><h2 id="historyTitle">লেনদেন</h2><span id="visibleCount"></span></div>
+      <label class="search-box"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="নাম বা বিভাগ খুঁজুন" autocomplete="off"><button id="clearSearch" type="button" aria-label="সার্চ মুছুন">×</button></label>
+    </section>
+    <nav class="filters" id="filters" aria-label="লেনদেনের ধরন">
+      <button class="filter active" data-type="all" type="button">সব</button>
+      <button class="filter" data-type="expense" type="button">খরচ</button>
+      <button class="filter" data-type="income" type="button">আয়</button>
+    </nav>
+    <section class="transaction-list" id="transactionList" aria-live="polite"></section>
+    </section>
+    <p class="local-note" id="localNote">আপনার হিসাব এই ডিভাইসের browser-এ সংরক্ষিত থাকে</p>
+  </main>
+
+  <nav class="bottom-nav" aria-label="প্রধান মেনু"><button class="nav-item active" data-view="records" type="button"><span aria-hidden="true">☷</span><small id="recordsTabLabel">হিসাব</small></button><button class="nav-add" id="addButton" type="button" aria-label="লেনদেন যোগ করুন">＋</button><button class="nav-item" data-view="chart" type="button"><span aria-hidden="true">▥</span><small id="chartTabLabel">গ্রাফ</small></button></nav>
+
+  <dialog id="transactionDialog">
+    <form class="dialog-card" id="transactionForm" novalidate>
+      <header class="dialog-header"><h2 id="dialogTitle">নতুন লেনদেন</h2><button class="close-button" id="closeDialog" type="button" aria-label="বন্ধ করুন">×</button></header>
+      <div class="type-switch" id="typeSwitch"><button class="type-choice active" data-value="expense" type="button" id="expenseChoice">খরচ</button><button class="type-choice" data-value="income" type="button" id="incomeChoice">আয়</button></div>
+      <div class="field"><label id="amountLabel" for="amountInput">টাকার পরিমাণ *</label><div class="amount-input"><span>৳</span><input id="amountInput" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="০" required></div></div>
+      <div class="field"><label id="categoryLabel" for="categoryInput">বিভাগ</label><select class="sr-only" id="categoryInput" tabindex="-1" aria-hidden="true"></select><div class="category-grid" id="categoryGrid" role="group" aria-labelledby="categoryLabel"></div></div>
+      <div class="field"><label id="dateLabel" for="dateInput">তারিখ</label><input id="dateInput" type="date" required></div>
+      <div class="field"><label id="noteLabel" for="noteInput">নোট (ঐচ্ছিক)</label><textarea id="noteInput" maxlength="140" rows="2" placeholder="বাড়তি কোনো তথ্য"></textarea></div>
+      <footer class="dialog-actions"><button class="cancel-button" id="cancelDialog" type="button">বাতিল</button><button class="save-button" id="saveButton" type="submit">সেভ করুন</button></footer>
+    </form>
+  </dialog>
+  <dialog id="settingsDialog">
+    <section class="dialog-card settings-card">
+      <header class="dialog-header"><h2 id="settingsTitle">সেটিংস</h2><button class="close-button" id="closeSettings" type="button" aria-label="বন্ধ করুন">×</button></header>
+      <section class="account-section" aria-labelledby="accountTitle"><h3 id="accountTitle">অ্যাকাউন্ট ও Sync</h3><p id="accountStatus">এই ডিভাইসে হিসাব সংরক্ষিত আছে</p><p class="account-email" id="accountEmail" hidden></p><button class="google-button google-signup" id="googleSignIn" type="button"><svg class="g-logo" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span id="googleSignInLabel">Google দিয়ে সাইন আপ / সাইন ইন</span></button><p class="account-hint" id="accountHint">নতুন হলে Google দিয়ে অ্যাকাউন্ট খোলা হবে, আগে থেকে থাকলে সাইন ইন হবে।</p><button class="google-button signout-button" id="googleSignOut" type="button" hidden><span id="googleSignOutLabel">সাইন আউট</span></button></section>
+      <p class="settings-label" id="themeLabel">থিমের রং</p>
+      <div class="theme-options" role="group" aria-labelledby="themeLabel">
+        <button class="theme-option" data-theme-choice="emerald" type="button"><i></i><span data-bn="সবুজ" data-en="Emerald">সবুজ</span><b>✓</b></button>
+        <button class="theme-option" data-theme-choice="ocean" type="button"><i></i><span data-bn="নীল" data-en="Ocean">নীল</span><b>✓</b></button>
+        <button class="theme-option" data-theme-choice="violet" type="button"><i></i><span data-bn="বেগুনি" data-en="Violet">বেগুনি</span><b>✓</b></button>
+        <button class="theme-option" data-theme-choice="rose" type="button"><i></i><span data-bn="গোলাপি" data-en="Rose">গোলাপি</span><b>✓</b></button>
+      </div>
+      <footer class="dialog-actions"><button class="save-button" id="doneSettings" type="button">ঠিক আছে</button></footer>
+    </section>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+window.TAKAGUCHHI_FIREBASE_CONFIG = {};
+  </script>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+    import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+
+    const config = window.TAKAGUCHHI_FIREBASE_CONFIG || {};
+    const required = ['apiKey', 'authDomain', 'projectId', 'appId'];
+    const configured = required.every(key => typeof config[key] === 'string' && config[key].trim());
+    const emit = (name, detail) => window.dispatchEvent(new CustomEvent(name, { detail }));
+
+    if (!configured) {
+      emit('takaguchhi-cloud-ready', { configured: false });
+    } else {
+      try {
+        const app = initializeApp(config);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+        const stateRef = uid => doc(db, 'users', uid);
+        let activeUser = null;
+
+        const api = {
+          configured: true,
+          signIn: () => signInWithPopup(auth, provider),
+          signOut: () => signOut(auth),
+          async saveState(state) {
+            if (!activeUser) return;
+            await setDoc(stateRef(activeUser.uid), {
+              items: Array.isArray(state.items) ? state.items : [],
+              deletedIds: state.deletedIds && typeof state.deletedIds === 'object' ? state.deletedIds : {},
+              updatedAt: serverTimestamp()
+            });
+          }
+        };
+        emit('takaguchhi-cloud-ready', api);
+
+        onAuthStateChanged(auth, async user => {
+          activeUser = user || null;
+          emit('takaguchhi-auth', { user: user ? { uid: user.uid, email: user.email || '' } : null });
+          if (!user) return;
+          try {
+            const snapshot = await getDoc(stateRef(user.uid));
+            emit('takaguchhi-cloud-state', snapshot.exists() ? snapshot.data() : { items: [], deletedIds: {} });
+          } catch (error) {
+            console.error('TakaGuchhi cloud read failed:', error);
+            emit('takaguchhi-cloud-error', { code: error.code || 'cloud-read-failed' });
+          }
+        });
+      } catch (error) {
+        console.error('TakaGuchhi Firebase initialization failed:', error);
+        emit('takaguchhi-cloud-ready', { configured: false, error: error.message });
+      }
+    }
+  </script>
+  <script>
+(()=>{
+  'use strict';
+  const STORAGE_KEY='takaguchhi-transactions-v1';
+  const LANG_KEY='takaguchhi-language-v1';
+  const THEME_KEY='takaguchhi-theme-v1';
+  const DELETED_KEY='takaguchhi-deleted-v1';
+  const $=id=>document.getElementById(id);
+  const categories={
+    expense:[['food','খাবার','Food'],['restaurant','বাইরে খাওয়া','Dining out'],['transport','যাতায়াত','Transport'],['fuel','জ্বালানি','Fuel'],['rent','বাড়িভাড়া','Rent'],['electricity','বিদ্যুৎ বিল','Electricity'],['water','পানির বিল','Water bill'],['gas','গ্যাস বিল','Gas bill'],['phone','মোবাইল বিল','Mobile bill'],['internet','ইন্টারনেট','Internet'],['health','চিকিৎসা','Healthcare'],['medicine','ওষুধ','Medicine'],['education','শিক্ষা','Education'],['household','ঘর-সংসার','Household'],['shopping','কেনাকাটা','Shopping'],['clothing','পোশাক','Clothing'],['personalCare','ব্যক্তিগত যত্ন','Personal care'],['entertainment','বিনোদন','Entertainment'],['travel','ভ্রমণ','Travel'],['family','পরিবার','Family'],['childcare','শিশুর যত্ন','Childcare'],['loan','ঋণ/কিস্তি','Loan/EMI'],['insurance','বিমা','Insurance'],['subscriptions','সাবস্ক্রিপশন','Subscriptions'],['repairs','মেরামত','Repairs'],['gifts','উপহার','Gifts'],['charity','দান','Charity'],['fees','ফি/কর','Fees/Tax'],['smoking','ধূমপান','Smoking'],['drinks','পানীয়','Drinks'],['teaCoffee','চা-কফি','Tea & coffee'],['snacks','হালকা নাশতা','Snacks'],['pets','পোষা প্রাণী','Pets'],['fitness','ব্যায়াম/ফিটনেস','Fitness'],['parking','পার্কিং','Parking'],['work','কাজ/অফিস','Work/Office'],['other','অন্যান্য','Other']],
+    income:[['salary','বেতন','Salary'],['business','ব্যবসা','Business'],['freelance','ফ্রিল্যান্স','Freelance'],['sales','বিক্রয়','Sales'],['rentIncome','ভাড়ার আয়','Rental income'],['bonus','বোনাস','Bonus'],['gift','উপহার','Gift'],['investment','বিনিয়োগ','Investment'],['other','অন্যান্য','Other']]
+  };
+  const categoryIcons={food:'🍲',restaurant:'🍜',transport:'🚌',fuel:'⛽',rent:'🏠',electricity:'💡',water:'🚿',gas:'🔥',phone:'📱',internet:'🌐',health:'🩺',medicine:'💊',education:'📚',household:'🧹',shopping:'🛍️',clothing:'👕',personalCare:'🧴',entertainment:'🎬',travel:'✈️',family:'👨‍👩‍👧',childcare:'🧸',loan:'🏦',insurance:'🛡️',subscriptions:'📺',repairs:'🛠️',gifts:'🎁',charity:'💝',fees:'🧾',smoking:'🚬',drinks:'🥤',teaCoffee:'☕',snacks:'🍪',pets:'🐾',fitness:'🏋️',parking:'🅿️',work:'💼',salary:'💼',business:'🏪',freelance:'🧑‍💻',sales:'🛒',rentIncome:'🏘️',bonus:'🎉',investment:'📈',other:'•'};
+  const chartPalette=['#11a77b','#e76f51','#457b9d','#f4a261','#8e6cbb','#2a9d8f','#e63946','#3a86ff','#bc6c25','#6a994e','#d45087','#00a6a6','#ff9f1c','#7b2cbf','#588157','#ef476f','#118ab2','#c77dff','#fb8500','#606c38','#4361ee','#f72585','#4d908e','#f9844a','#577590','#90be6d','#9b5de5','#00bbf9','#f15bb5','#fee440','#277da1','#f94144','#43aa8b','#f8961e','#7251b5','#4895ef','#b56576','#386641','#bc4749','#219ebc','#8338ec','#3d5a80','#ff6d00','#2d6a4f','#c9184a'];
+  const categoryColor=key=>{const keys=[...new Set([...categories.expense,...categories.income].map(item=>item[0]))];return chartPalette[Math.max(0,keys.indexOf(key))%chartPalette.length]};
+  const text={
+    bn:{tagline:'প্রতিদিনের হিসাব, এক জায়গায়',balance:'এই মাসে হাতে আছে',monthHint:'মাসের মোট ব্যালান্স',income:'মোট আয়',expense:'মোট খরচ',history:'লেনদেন',search:'নাম বা বিভাগ খুঁজুন',all:'সব',add:'লেনদেন যোগ করুন',local:'আপনার হিসাব এই ডিভাইসের browser-এ সংরক্ষিত থাকে',newTitle:'নতুন লেনদেন',editTitle:'লেনদেন সম্পাদনা',expenseType:'খরচ',incomeType:'আয়',amount:'টাকার পরিমাণ *',description:'কীসের লেনদেন? *',descriptionHint:'যেমন: বাজার খরচ',category:'বিভাগ',date:'তারিখ',note:'নোট (ঐচ্ছিক)',noteHint:'বাড়তি কোনো তথ্য',cancel:'বাতিল',save:'সেভ করুন',saved:'লেনদেন সেভ হয়েছে',deleted:'লেনদেন মুছে ফেলা হয়েছে',deleteConfirm:'এই লেনদেনটি মুছে ফেলবেন?',empty:'এই মাসে কোনো লেনদেন নেই',emptyHint:'আয় বা খরচ যোগ করে হিসাব শুরু করুন',emptySearch:'মিলেছে এমন লেনদেন নেই',transaction:'টি লেনদেন',count:'টি',incomeSign:'+',expenseSign:'−',noNote:'',chartTab:'গ্রাফ',recordsTab:'হিসাব',monthTab:'মাস',yearTab:'বছর',topCategories:'শীর্ষ বিভাগ',noChartData:'এই সময়ে কোনো লেনদেন নেই',moreCategories:'আরও বিভাগ',
+      monthFormat:new Intl.DateTimeFormat('bn-BD',{month:'long',year:'numeric'}),dateFormat:new Intl.DateTimeFormat('bn-BD',{day:'numeric',month:'short'}),currency:new Intl.NumberFormat('bn-BD',{style:'currency',currency:'BDT',maximumFractionDigits:2}),
+      cat:Object.fromEntries(Object.values(categories).flat().map(c=>[c[0],c[1]]))},
+    en:{tagline:'Your daily money, in one place',balance:'Available this month',monthHint:'Net balance this month',income:'Total income',expense:'Total expenses',history:'Transactions',search:'Search name or category',all:'All',add:'Add transaction',local:'Your records stay in this browser on this device',newTitle:'New transaction',editTitle:'Edit transaction',expenseType:'Expense',incomeType:'Income',amount:'Amount *',description:'What was it for? *',descriptionHint:'e.g. Grocery shopping',category:'Category',date:'Date',note:'Note (optional)',noteHint:'Add a detail if useful',cancel:'Cancel',save:'Save transaction',saved:'Transaction saved',deleted:'Transaction removed',deleteConfirm:'Remove this transaction?',empty:'No transactions this month',emptyHint:'Add income or an expense to get started',emptySearch:'No matching transactions',transaction:'transactions',count:'',incomeSign:'+',expenseSign:'−',noNote:'',chartTab:'Chart',recordsTab:'Records',monthTab:'Month',yearTab:'Year',topCategories:'Top categories',noChartData:'No transactions for this period',moreCategories:'More categories',
+      monthFormat:new Intl.DateTimeFormat('en',{month:'long',year:'numeric'}),dateFormat:new Intl.DateTimeFormat('en',{day:'numeric',month:'short'}),currency:new Intl.NumberFormat('en-BD',{style:'currency',currency:'BDT',maximumFractionDigits:2}),
+      cat:Object.fromEntries(Object.values(categories).flat().map(c=>[c[0],c[2]]))}
+  };
+  let transactions=readTransactions();
+  let language=localStorage.getItem(LANG_KEY)==='en'?'en':'bn';
+  let theme=['emerald','ocean','violet','rose'].includes(localStorage.getItem(THEME_KEY))?localStorage.getItem(THEME_KEY):'emerald';
+  let viewMonth=monthStart(new Date());
+  let activeType='all';
+  let currentView='records';
+  let chartPeriod='month';
+  let chartDate=monthStart(new Date());
+  let chartType='expense';
+  let editingId=null;
+  let toastTimer;
+  let cloudApi=null,cloudUser=null,deletedIds=readDeletedIds();
+
+  function readTransactions(){try{const value=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');return Array.isArray(value)?value.filter(validTransaction):[]}catch{return[]}}
+  function validTransaction(x){return x&&typeof x.id==='string'&&(x.type==='income'||x.type==='expense')&&Number.isFinite(Number(x.amount))&&typeof x.date==='string'}
+  function readDeletedIds(){try{return JSON.parse(localStorage.getItem(DELETED_KEY)||'{}')}catch{return{}}}
+  function persist(){let stored=true;try{localStorage.setItem(STORAGE_KEY,JSON.stringify(transactions))}catch{stored=false}try{localStorage.setItem(DELETED_KEY,JSON.stringify(deletedIds))}catch{stored=false}if(cloudUser&&cloudApi?.configured)cloudApi.saveState({items:transactions,deletedIds}).catch(()=>setAccountStatus(language==='bn'?'Sync হয়নি। ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন':'Sync failed. Check your connection and try again'));return stored}
+  function setAccountStatus(message){$('accountStatus').textContent=message}
+  function updateAccountUi(){const isBn=language==='bn';$('accountTitle').textContent=isBn?'অ্যাকাউন্ট ও Sync':'Account & Sync';$('googleSignInLabel').textContent=isBn?'Google দিয়ে সাইন আপ / সাইন ইন':'Sign up / Sign in with Google';$('accountHint').textContent=isBn?'নতুন হলে Google দিয়ে অ্যাকাউন্ট খোলা হবে, আগে থেকে থাকলে সাইন ইন হবে।':'New here? A Google account will be created. Already signed up? You will just sign in.';$('accountHint').hidden=Boolean(cloudUser);$('googleSignOutLabel').textContent=isBn?'সাইন আউট':'Sign out';$('googleSignIn').hidden=Boolean(cloudUser);$('googleSignOut').hidden=!cloudUser;$('accountEmail').hidden=!cloudUser;$('accountEmail').textContent=cloudUser?.email||'';setAccountStatus(!cloudApi?.configured?(isBn?'Google sync চালু করতে Firebase সেটআপ প্রয়োজন':'Firebase setup is needed to enable Google sync'):cloudUser?(isBn?'Google account-এ হিসাব sync হচ্ছে':'Your records are syncing to your Google account'):(isBn?'এই ডিভাইসে হিসাব সংরক্ষিত আছে':'Your records are saved on this device'))}
+  function mergeCloudState(remote={}){const remoteItems=Array.isArray(remote.items)?remote.items.filter(validTransaction):[];deletedIds={...deletedIds,...(remote.deletedIds||{})};const byId=new Map();for(const item of [...transactions,...remoteItems]){const previous=byId.get(item.id);if(!previous||(item.updatedAt||item.createdAt||0)>(previous.updatedAt||previous.createdAt||0))byId.set(item.id,item)}transactions=[...byId.values()].filter(item=>(deletedIds[item.id]||0)<=(item.updatedAt||item.createdAt||0));persist();render()}
+  function monthStart(date){return new Date(date.getFullYear(),date.getMonth(),1)}
+  function monthKey(date){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`}
+  function localDate(date){const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,'0'),d=String(date.getDate()).padStart(2,'0');return `${y}-${m}-${d}`}
+  function escapeHtml(value=''){return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+  function words(){return text[language]}
+  function amount(value){return words().currency.format(Number(value)||0).replace(/\s/g,' ')}
+  function categoryName(key){return words().cat[key]||words().cat.other}
+  function monthTransactions(){return transactions.filter(tx=>tx.date.slice(0,7)===monthKey(viewMonth))}
+  function setCategoryOptions(type,selected=''){const select=$('categoryInput');select.innerHTML=categories[type].map(([id,bn,en])=>`<option value="${id}">${categoryIcons[id]||'•'} ${language==='bn'?bn:en}</option>`).join('');if(selected&&categories[type].some(c=>c[0]===selected))select.value=selected;const active=select.value||categories[type][0][0];select.value=active;$('categoryGrid').innerHTML=categories[type].map(([id,bn,en])=>`<button class="category-option ${id===active?'selected':''}" type="button" data-category="${id}" aria-pressed="${id===active}"><span class="category-option-icon" aria-hidden="true">${categoryIcons[id]||'•'}</span><span>${language==='bn'?bn:en}</span></button>`).join('')}
+  function applyLanguage(){document.documentElement.lang=language;$('languageButton').textContent=language==='bn'?'অ':'EN';$('languageButton').title=language==='bn'?'English':'বাংলা';$('settingsTitle').textContent=language==='bn'?'সেটিংস':'Settings';$('themeLabel').textContent=language==='bn'?'থিমের রং':'Theme color';$('doneSettings').textContent=language==='bn'?'ঠিক আছে':'Done';$('settingsButton').title=language==='bn'?'সেটিংস':'Settings';$('settingsButton').setAttribute('aria-label',language==='bn'?'সেটিংস':'Settings');document.querySelectorAll('.theme-option span').forEach(label=>label.textContent=label.dataset[language]);document.querySelectorAll('.theme-option').forEach(button=>button.classList.toggle('selected',button.dataset.themeChoice===theme));updateAccountUi()}
+  function applyTheme(){document.body.dataset.theme=theme;document.querySelectorAll('.theme-option').forEach(button=>button.classList.toggle('selected',button.dataset.themeChoice===theme));document.querySelector('meta[name="theme-color"]').content=({emerald:'#087c60',ocean:'#1876c9',violet:'#7152c8',rose:'#d94c81'})[theme]}
+  function render(){
+    const w=words(),monthly=monthTransactions();
+    const income=monthly.filter(x=>x.type==='income').reduce((s,x)=>s+Number(x.amount),0);
+    const expense=monthly.filter(x=>x.type==='expense').reduce((s,x)=>s+Number(x.amount),0);
+    const net=income-expense;
+    $('tagline').textContent=w.tagline;$('balanceLabel').textContent=w.balance;$('balanceAmount').textContent=amount(net);
+    $('monthLabel').textContent=w.monthFormat.format(viewMonth);$('monthHint').textContent=w.monthHint;
+    $('incomeLabel').textContent=w.income;$('expenseLabel').textContent=w.expense;
+    $('incomeAmount').textContent=amount(income);$('expenseAmount').textContent=amount(expense);
+    $('historyTitle').textContent=w.history;$('searchInput').placeholder=w.search;$('localNote').textContent=w.local;
+    $('recordsTabLabel').textContent=w.recordsTab;$('chartTabLabel').textContent=w.chartTab;
+    $('addButton').setAttribute('aria-label',w.add);
+    $('recordsView').hidden=currentView!=='records';$('chartView').hidden=currentView!=='chart';
+    document.querySelector('.hero-card').hidden=currentView!=='records';document.querySelector('.summary-grid').hidden=currentView!=='records';
+    document.querySelectorAll('.nav-item').forEach(button=>button.classList.toggle('active',button.dataset.view===currentView));
+    $('dialogTitle').textContent=editingId?w.editTitle:w.newTitle;
+    $('expenseChoice').textContent=w.expenseType;$('incomeChoice').textContent=w.incomeType;
+    $('amountLabel').textContent=w.amount;
+    $('categoryLabel').textContent=w.category;$('dateLabel').textContent=w.date;$('noteLabel').textContent=w.note;$('noteInput').placeholder=w.noteHint;
+    $('cancelDialog').textContent=w.cancel;$('saveButton').textContent=w.save;
+    $('transactionCount').textContent=new Intl.NumberFormat(language==='bn'?'bn-BD':'en').format(monthly.length)+' '+w.transaction;
+    $('chartExpenseLabel').textContent=w.expenseType;$('chartIncomeLabel').textContent=w.incomeType;
+    document.querySelectorAll('.chart-type-button').forEach(button=>{const active=button.dataset.chartType===chartType;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active))});
+    $('monthTab').textContent=w.monthTab;$('yearTab').textContent=w.yearTab;
+    document.querySelectorAll('[data-period]').forEach(button=>button.classList.toggle('active',button.dataset.period===chartPeriod));
+    $('chartDateLabel').textContent=chartPeriod==='month'?w.monthFormat.format(chartDate):String(chartDate.getFullYear());
+    $('donutTotalLabel').textContent=language==='bn'
+      ?`${chartPeriod==='month'?'মাসের':'বছরের'} মোট ${chartType==='expense'?'খরচ':'আয়'}`
+      :`${chartPeriod==='month'?'Monthly':'Yearly'} ${chartType==='expense'?'expenses':'income'}`;
+    $('topListTitle').textContent=w.topCategories;
+    if(currentView==='chart')renderCategoryChart();
+    document.querySelectorAll('.filter').forEach(button=>{button.classList.toggle('active',button.dataset.type===activeType);button.textContent=button.dataset.type==='all'?w.all:button.dataset.type==='income'?w.incomeType:w.expenseType});
+    const query=$('searchInput').value.trim().toLocaleLowerCase();$('clearSearch').classList.toggle('visible',Boolean(query));
+    const shown=monthly.filter(tx=>(activeType==='all'||tx.type===activeType)&&(!query||[tx.description,tx.note,categoryName(tx.category)].some(s=>(s||'').toLocaleLowerCase().includes(query))))
+      .sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||0)-(a.createdAt||0));
+    $('visibleCount').textContent=new Intl.NumberFormat(language==='bn'?'bn-BD':'en').format(shown.length)+' '+(language==='bn'?w.count:w.transaction);
+    const host=$('transactionList');
+    if(!shown.length){host.innerHTML=`<div class="empty"><div class="empty-icon">${query?'⌕':'৳'}</div><h3>${query?w.emptySearch:w.empty}</h3><p>${query?'':w.emptyHint}</p></div>`;return}
+    host.innerHTML=shown.map(tx=>`<article class="transaction"><div class="tx-icon ${tx.type==='income'?'income':''}" aria-hidden="true">${categoryIcons[tx.category]||'•'}</div><div><div class="tx-name">${escapeHtml(categoryName(tx.category))}</div><div class="tx-meta">${w.dateFormat.format(new Date(`${tx.date}T12:00:00`))}</div>${tx.note?`<div class="tx-note">${escapeHtml(tx.note)}</div>`:''}</div><div class="tx-right"><div class="tx-amount ${tx.type}">${tx.type==='income'?w.incomeSign:w.expenseSign}${amount(tx.amount)}</div><div class="tx-actions"><button type="button" data-edit="${escapeHtml(tx.id)}" aria-label="${language==='bn'?'সম্পাদনা':'Edit'}">✎</button><button class="delete" type="button" data-delete="${escapeHtml(tx.id)}" aria-label="${language==='bn'?'মুছুন':'Remove'}">×</button></div></div></article>`).join('');
+  }
+  function renderCategoryChart(){
+    const type=chartType;
+    const filtered=transactions.filter(tx=>tx.type===type&&(chartPeriod==='month'?tx.date.slice(0,7)===monthKey(chartDate):tx.date.slice(0,4)===String(chartDate.getFullYear())));
+    const grouped=new Map();
+    filtered.forEach(tx=>grouped.set(tx.category,(grouped.get(tx.category)||0)+Number(tx.amount)));
+    const ranked=[...grouped.entries()].map(([key,value])=>({key,value,label:categoryName(key)})).sort((a,b)=>b.value-a.value);
+    const total=ranked.reduce((sum,row)=>sum+row.value,0);
+    const slices=ranked.map(row=>({...row,color:categoryColor(row.key)}));
+    let cursor=0;
+    const gradient=slices.map(row=>{const start=cursor;cursor+=total?row.value/total*100:0;return `${row.color} ${start}% ${cursor}%`}).join(',');
+    $('donutChart').style.background=total?`conic-gradient(${gradient})`:'#e9eeeb';
+    $('donutTotal').textContent=amount(total);
+    $('donutChart').setAttribute('aria-label',`${words()[type]} · ${amount(total)}`);
+    $('chartLegend').innerHTML=slices.length?slices.map(row=>`<div class="legend-row"><i class="legend-color" style="background:${row.color}"></i><span class="legend-name">${categoryIcons[row.key]||''} ${escapeHtml(row.label)}</span><span class="legend-percent">${total?Math.round(row.value/total*100):0}%</span></div>`).join(''):`<p class="chart-empty">${words().noChartData}</p>`;
+    $('categoryBreakdown').innerHTML=ranked.length?ranked.slice(0,10).map(row=>`<div class="breakdown-row"><div class="breakdown-top"><span class="breakdown-name"><i class="legend-color" style="background:${categoryColor(row.key)}"></i>${categoryIcons[row.key]||''} ${escapeHtml(row.label)} <small>${total?Math.round(row.value/total*100):0}%</small></span><strong>${amount(row.value)}</strong></div><div class="breakdown-track"><span style="width:${total?row.value/total*100:0}%;background:${categoryColor(row.key)}"></span></div></div>`).join(''):`<div class="chart-empty">${words().noChartData}</div>`;
+  }
+  function setType(type){activeType=type;document.querySelectorAll('.type-choice').forEach(b=>b.classList.toggle('active',b.dataset.value===type));setCategoryOptions(type,$('categoryInput').value)}
+  function openDialog(tx){editingId=tx?.id||null;$('transactionForm').reset();$('amountInput').value=tx?.amount||'';$('dateInput').value=tx?.date||localDate(new Date());$('noteInput').value=tx?.note||'';setType(tx?.type||'expense');setCategoryOptions(tx?.type||'expense',tx?.category||'');render();$('transactionDialog').showModal();setTimeout(()=>$('amountInput').focus(),40)}
+  function showToast(message){$('toast').textContent=message;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2100)}
+  function changeMonth(delta){viewMonth=new Date(viewMonth.getFullYear(),viewMonth.getMonth()+delta,1);chartDate=new Date(chartDate.getFullYear(),chartDate.getMonth()+delta,1);render()}
+
+  $('addButton').addEventListener('click',()=>openDialog());
+  $('previousMonth').addEventListener('click',()=>changeMonth(-1));
+  $('nextMonth').addEventListener('click',()=>changeMonth(1));
+  document.querySelector('.bottom-nav').addEventListener('click',event=>{const button=event.target.closest('[data-view]');if(button){currentView=button.dataset.view;render()}});
+  $('chartTypeSwitch').addEventListener('click',event=>{const button=event.target.closest('[data-chart-type]');if(button){chartType=button.dataset.chartType;render()}});
+  $('periodTabs').addEventListener('click',event=>{const button=event.target.closest('[data-period]');if(button){chartPeriod=button.dataset.period;render()}});
+  $('chartPrevious').addEventListener('click',()=>{chartDate=new Date(chartDate.getFullYear(),chartDate.getMonth()-(chartPeriod==='month'?1:12),1);render()});
+  $('chartNext').addEventListener('click',()=>{chartDate=new Date(chartDate.getFullYear(),chartDate.getMonth()+(chartPeriod==='month'?1:12),1);render()});
+  $('filters').addEventListener('click',event=>{const button=event.target.closest('[data-type]');if(button){activeType=button.dataset.type;render()}});
+  $('searchInput').addEventListener('input',render);
+  $('clearSearch').addEventListener('click',()=>{$('searchInput').value='';render();$('searchInput').focus()});
+  $('languageButton').addEventListener('click',()=>{language=language==='bn'?'en':'bn';localStorage.setItem(LANG_KEY,language);const type=$('typeSwitch').querySelector('.active')?.dataset.value||'expense';applyLanguage();render();setCategoryOptions(type)});
+  $('settingsButton').addEventListener('click',()=>$('settingsDialog').showModal());
+  $('googleSignIn').addEventListener('click',async()=>{if(!cloudApi?.configured){setAccountStatus(language==='bn'?'Google sync চালু করতে Firebase project config যোগ করতে হবে':'Add your Firebase project config to enable Google sync');return}try{await cloudApi.signIn()}catch(e){setAccountStatus((language==='bn'?'Google sign-in করা যায়নি':'Google sign-in failed')+(e&&e.message?' ('+e.message+')':''))}});
+  $('googleSignOut').addEventListener('click',async()=>{try{await cloudApi?.signOut()}catch{setAccountStatus(language==='bn'?'সাইন আউট করা যায়নি':'Sign out failed')}});
+  window.addEventListener('takaguchhi-cloud-ready',event=>{cloudApi=event.detail;updateAccountUi()});
+  window.addEventListener('takaguchhi-auth',event=>{cloudUser=event.detail.user;updateAccountUi()});
+  window.addEventListener('takaguchhi-cloud-state',event=>mergeCloudState(event.detail));
+  window.addEventListener('takaguchhi-cloud-error',()=>setAccountStatus(language==='bn'?'Sync হয়নি। ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন':'Sync failed. Check your connection and try again'));
+  $('closeSettings').addEventListener('click',()=>$('settingsDialog').close());$('doneSettings').addEventListener('click',()=>$('settingsDialog').close());
+  $('settingsDialog').addEventListener('click',event=>{if(event.target===$('settingsDialog'))$('settingsDialog').close()});
+  $('settingsDialog').addEventListener('click',event=>{const button=event.target.closest('[data-theme-choice]');if(button){theme=button.dataset.themeChoice;localStorage.setItem(THEME_KEY,theme);applyTheme()}});
+  $('typeSwitch').addEventListener('click',event=>{const button=event.target.closest('[data-value]');if(button)setType(button.dataset.value)});
+  $('categoryGrid').addEventListener('click',event=>{const button=event.target.closest('[data-category]');if(button){const type=$('typeSwitch').querySelector('.active')?.dataset.value||'expense';setCategoryOptions(type,button.dataset.category)}});
+  $('closeDialog').addEventListener('click',()=>$('transactionDialog').close());
+  $('cancelDialog').addEventListener('click',()=>$('transactionDialog').close());
+  $('transactionList').addEventListener('click',event=>{
+    const edit=event.target.closest('[data-edit]');
+    if(edit){const tx=transactions.find(x=>x.id===edit.dataset.edit);if(tx)openDialog(tx);return}
+    const remove=event.target.closest('[data-delete]');
+    if(remove&&confirm(words().deleteConfirm)){deletedIds[remove.dataset.delete]=Date.now();transactions=transactions.filter(x=>x.id!==remove.dataset.delete);persist();render();showToast(words().deleted)}
+  });
+  function saveTransaction(event){
+    event.preventDefault();
+    try{
+      const type=$('typeSwitch').querySelector('.active')?.dataset.value||'expense';
+      const category=$('categoryInput').value||categories[type][0][0];
+      const rawAmount=$('amountInput').value.trim();
+      const tx={id:editingId||`${Date.now()}-${Math.random().toString(36).slice(2,8)}`,type,amount:Number(rawAmount),category,date:$('dateInput').value,note:$('noteInput').value.trim(),createdAt:editingId?(transactions.find(item=>item.id===editingId)?.createdAt||Date.now()):Date.now(),updatedAt:Date.now()};
+      if(!rawAmount||!Number.isFinite(tx.amount)||tx.amount<=0){showToast(language==='bn'?'সঠিক টাকার পরিমাণ লিখুন':'Enter a valid amount');$('amountInput').focus();return}
+      if(!tx.date){showToast(language==='bn'?'তারিখ নির্বাচন করুন':'Choose a date');$('dateInput').focus();return}
+      if(!categories[type].some(item=>item[0]===category)){showToast(language==='bn'?'বিভাগ নির্বাচন করুন':'Choose a category');return}
+      if(editingId)transactions=transactions.map(old=>old.id===editingId?tx:old);else transactions.push(tx);
+      const stored=persist();
+      $('transactionDialog').close();
+      render();
+      showToast(stored?words().saved:(language==='bn'?'হিসাব যোগ হয়েছে, তবে browser-এ স্থায়ীভাবে সেভ হয়নি':'Added, but could not save permanently in this browser'));
+    }catch(error){
+      console.error('TakaGuchhi save failed:',error);
+      showToast(language==='bn'?'হিসাব যোগ করা যায়নি। আবার চেষ্টা করো।':'Could not add transaction. Please try again.');
+    }
+  }
+  $('transactionForm').addEventListener('submit',saveTransaction);
+  $('saveButton').addEventListener('click',event=>{
+    event.preventDefault();
+    saveTransaction(event);
+  });
+  applyLanguage();applyTheme();setCategoryOptions('expense');render();
+
+})();
+
+  </script>
+</body>
+</html>
